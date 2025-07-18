@@ -1,6 +1,3 @@
-# ======================
-# 1. 环境配置与数据加载
-# ======================
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,6 +18,7 @@ plt.rcParams['font.sans-serif'] = ['SimHei']  # Windows
 plt.rcParams['axes.unicode_minus'] = False
 warnings.filterwarnings('ignore')
 
+# 1. 环境配置与数据加载
 # 设置文件路径
 TRAIN_PATH = r"E:\py\1\SantanderCustomerTransactionPrediction\train.csv"
 TEST_PATH = r"E:\py\1\SantanderCustomerTransactionPrediction\test.csv"
@@ -38,10 +36,7 @@ print(f"正在加载测试数据: {TEST_PATH}")
 test = pd.read_csv(TEST_PATH)
 print(f"测试集已加载，形状: {test.shape}")
 
-# ======================
 # 2. 数据预处理
-# ======================
-
 # 合并训练集和测试集
 print("合并训练集和测试集...")
 full_data = pd.concat([train.drop('target', axis=1), test], axis=0)
@@ -69,10 +64,8 @@ else:
         full_data.drop(columns=high_missing_cols, inplace=True)
         print(f"已删除{len(high_missing_cols)}个缺失率>30%的特征")
 
-# ======================
-# 3. 数据探索与分析
-# ======================
 
+# 3. 数据探索与分析
 # 目标变量分布可视化
 plt.figure(figsize=(10, 6))
 sns.countplot(x='target', data=train)
@@ -91,9 +84,7 @@ print(f"\n类别分布统计:")
 print(f"负样本数量: {neg_count} ({neg_count / (neg_count + pos_count):.2%})")
 print(f"正样本数量: {pos_count} ({pos_count / (neg_count + pos_count):.2%})")
 
-# ======================
 # 4. 特征工程
-# ======================
 
 # 特征标准化
 print("\n应用特征标准化...")
@@ -120,9 +111,7 @@ X_train, X_val, y_train, y_val = train_test_split(
 )
 print(f"训练集形状: {X_train.shape}, 验证集形状: {X_val.shape}")
 
-# ======================
 # 5. 样本不平衡处理
-# ======================
 
 # 应用SMOTE过采样
 print("\n应用SMOTE过采样处理样本不平衡...")
@@ -135,9 +124,8 @@ print(f"负样本数量: {sum(y_res == 0)}")
 print(f"正样本数量: {sum(y_res == 1)}")
 print(f"正样本比例: {sum(y_res == 1) / len(y_res):.1%}")
 
-# ======================
+
 # 6. GPU加速模型构建
-# ======================
 
 print("\n开始训练GPU加速模型...")
 
@@ -230,9 +218,8 @@ plt.savefig(roc_path, dpi=300)
 print(f"\nROC曲线图已保存至: {roc_path}")
 plt.close()
 
-# ======================
+
 # 7. 模型优化与集成
-# ======================
 
 # XGBoost超参数调优
 print("\n开始XGBoost超参数调优...")
@@ -271,7 +258,7 @@ print(f"最优AUC: {grid_search.best_score_:.4f}")
 # 构建Stacking集成模型
 print("\n构建Stacking集成模型...")
 base_models = [
-    ('nb', GaussianNB()),
+    ('Logistic Regression',  LogisticRegression(C=0.01, solver='sag', max_iter=1000)),
     ('xgb', best_xgb),
     ('lgbm', LGBMClassifier(
         device='gpu',
@@ -291,7 +278,7 @@ stack_model = StackingClassifier(
         class_weight=class_weights
     ),
     cv=5,
-    n_jobs=1  # GPU不支持多进程
+    n_jobs=1
 )
 
 # 训练集成模型
@@ -328,9 +315,7 @@ results_df.to_csv(results_csv, index=False)
 print(f"\n模型性能对比已保存至: {results_csv}")
 print(results_df)
 
-# ======================
 # 8. 生成预测结果
-# ======================
 
 # 在完整训练集上重新训练模型
 print("\n在完整训练集上重新训练最终模型...")
@@ -358,9 +343,7 @@ submission = pd.DataFrame({
 submission.to_csv(submission_path, index=False)
 print(f"预测结果已保存至: {submission_path}")
 
-# ======================
 # 9. 模型分析报告
-# ======================
 
 # 生成模型分析报告
 plt.figure(figsize=(12, 7))
