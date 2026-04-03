@@ -3,7 +3,7 @@
 
 ## Qwen3.5-0.8B 端侧小型化（PyTorch，4-bit NF4）
 
-新增脚本：`/home/runner/work/kaggle-1/kaggle-1/compress_qwen_4bit.py`
+新增脚本：`compress_qwen_4bit.py`
 
 ### 依赖安装
 
@@ -14,9 +14,9 @@ pip install torch transformers accelerate bitsandbytes sentencepiece
 ### 运行方式
 
 ```bash
-python /home/runner/work/kaggle-1/kaggle-1/compress_qwen_4bit.py \
+python compress_qwen_4bit.py \
   --model-dir /absolute/path/to/Qwen3.5-0.8B \
-  --out-dir /home/runner/work/kaggle-1/kaggle-1/qwen3_5_0_8b_4bit \
+  --out-dir ./qwen3_5_0_8b_4bit \
   --max-new-tokens 128
 ```
 

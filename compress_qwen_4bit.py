@@ -23,8 +23,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--out-dir",
-        default="/home/runner/work/kaggle-1/kaggle-1/qwen3_5_0_8b_4bit",
-        help="Absolute path to output directory for quantized model.",
+        default="./qwen3_5_0_8b_4bit",
+        help="Output directory for quantized model.",
     )
     parser.add_argument(
         "--prompt",
