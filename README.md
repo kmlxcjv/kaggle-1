@@ -8,7 +8,7 @@
 ### 依赖安装
 
 ```bash
-pip install torch transformers accelerate bitsandbytes sentencepiece
+pip install "torch>=2.1" "transformers>=4.45" "accelerate>=0.34" "bitsandbytes>=0.43" sentencepiece
 ```
 
 ### 运行方式
@@ -24,3 +24,4 @@ python compress_qwen_4bit.py \
 - 使用 `load_in_4bit=True` + NF4（bitsandbytes）进行低比特量化；
 - 使用 `torch.compile(mode="reduce-overhead")` 做图级优化（若当前环境支持）；
 - 默认 `max_new_tokens=128`，4GB 显存建议控制在 64~256。
+- 量化模型跨环境重载时，建议在 `from_pretrained` 时再次传入 `quantization_config=BitsAndBytesConfig(...)`。

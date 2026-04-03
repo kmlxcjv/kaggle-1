@@ -64,7 +64,6 @@ def main() -> None:
         device_map="auto",
         trust_remote_code=True,
     )
-    model.eval()
 
     if hasattr(torch, "compile"):
         try:
@@ -72,6 +71,7 @@ def main() -> None:
             print("torch.compile enabled")
         except (RuntimeError, ValueError) as exc:
             print(f"torch.compile skipped: {exc}")
+    model.eval()
 
     print("GPU memory:", gpu_mem())
 
@@ -96,6 +96,7 @@ def main() -> None:
         "Note: bitsandbytes 4-bit modules may require reapplying quantization config "
         "when loading in a different environment."
     )
+    print("Reload tip: AutoModelForCausalLM.from_pretrained(saved_dir, quantization_config=BitsAndBytesConfig(...), device_map='auto').")
     print(f"Saving to: {args.out_dir}")
     model.save_pretrained(args.out_dir, safe_serialization=True)
     tokenizer.save_pretrained(args.out_dir)
