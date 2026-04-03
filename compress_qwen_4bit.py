@@ -70,7 +70,7 @@ def main() -> None:
         try:
             model = torch.compile(model, mode="reduce-overhead")
             print("torch.compile enabled")
-        except Exception as exc:
+        except (RuntimeError, ValueError) as exc:
             print(f"torch.compile skipped: {exc}")
 
     print("GPU memory:", gpu_mem())
@@ -92,6 +92,10 @@ def main() -> None:
     print(f"\nLatency: {(end - start):.2f}s")
     print("GPU memory after generation:", gpu_mem())
 
+    print(
+        "Note: bitsandbytes 4-bit modules may require reapplying quantization config "
+        "when loading in a different environment."
+    )
     print(f"Saving to: {args.out_dir}")
     model.save_pretrained(args.out_dir, safe_serialization=True)
     tokenizer.save_pretrained(args.out_dir)
